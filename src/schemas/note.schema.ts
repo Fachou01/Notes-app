@@ -16,7 +16,7 @@ export class Note {
   description: string;
 
   @Prop()
-  note: Object[];
+  notes: Object[];
 
   @Prop()
   collaborators: Object[];

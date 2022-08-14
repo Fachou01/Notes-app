@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Note, NoteDocument } from 'src/schemas/note.schema';
+import { AddNoteDto } from './dto/add-note.dto';
 import { NoteCollaboratorsDto } from './dto/note-invite-collaborators.dto';
 import { NoteDto } from './dto/note.dto';
 
@@ -47,6 +48,21 @@ export class NoteService {
     });*/
   }
 
+  async addNotes(id: string, note: AddNoteDto): Promise<Note | string> {
+    const addNote = {
+      description: note.description,
+    };
+    return await this.NoteModel.findOneAndUpdate(
+      { _id: id },
+      {
+        $push: { notes: addNote },
+      },
+      {
+        new: true,
+      },
+    );
+  }
+
   async inviteCollaborators(
     id: string,
     note: NoteCollaboratorsDto,
@@ -62,7 +78,6 @@ export class NoteService {
         },
       );
     });
-
     return 'Collaborators inserted';
   }
 

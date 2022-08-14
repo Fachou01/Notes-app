@@ -8,6 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { Note } from 'src/schemas/note.schema';
+import { AddNoteDto } from 'src/services/dto/add-note.dto';
 import { NoteCollaboratorsDto } from 'src/services/dto/note-invite-collaborators.dto';
 import { NoteDto } from 'src/services/dto/note.dto';
 import { NoteService } from 'src/services/note.service';
@@ -27,7 +28,7 @@ export class NoteController {
   }
 
   @Post('/')
-  async addUser(@Body() note: NoteDto): Promise<Note | string> {
+  async addNote(@Body() note: NoteDto): Promise<Note | string> {
     return await this.noteService.addNote(note);
   }
 
@@ -37,6 +38,14 @@ export class NoteController {
     @Body() note: Partial<NoteDto>,
   ): Promise<any> {
     return await this.noteService.update(id, note);
+  }
+
+  @Put('/add-note/:id')
+  async addNotes(
+    @Param('id') id: string,
+    @Body() note: AddNoteDto,
+  ): Promise<any> {
+    return await this.noteService.addNotes(id, note);
   }
 
   @Put('/invite/:id')
