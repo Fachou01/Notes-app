@@ -22,7 +22,6 @@ export class UserController {
 
   @Get(':id')
   async findById(@Param('id') id: string): Promise<User> {
-    console.log('param type', typeof id);
     return await this.userService.findById(id);
   }
 
