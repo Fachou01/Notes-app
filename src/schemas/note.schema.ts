@@ -15,8 +15,11 @@ export class Note {
   @Prop()
   description: string;
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
-  collaborators: User[];
+  @Prop()
+  note: Object[];
+
+  @Prop()
+  collaborators: Object[];
 }
 
 export const NoteSchema = SchemaFactory.createForClass(Note);

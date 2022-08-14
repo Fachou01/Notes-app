@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Note, NoteDocument } from 'src/schemas/note.schema';
+import { NoteCollaboratorsDto } from './dto/note-invite-collaborators.dto';
 import { NoteDto } from './dto/note.dto';
 
 @Injectable()
@@ -23,9 +24,46 @@ export class NoteService {
   }
 
   async update(id: string, note: Partial<NoteDto>): Promise<Note> {
-    return await this.NoteModel.findOneAndUpdate({ _id: id }, note, {
-      new: true,
+    return await this.NoteModel.findOneAndUpdate(
+      { _id: id },
+      {
+        title: note.title,
+        description: note.description,
+      },
+      {
+        new: true,
+      },
+    );
+    /*note.collaborators.map(async (collaborator) => {
+      await this.NoteModel.findOneAndUpdate(
+        { _id: id },
+        {
+          $push: { collaborators: collaborator },
+        },
+        {
+          new: true,
+        },
+      );
+    });*/
+  }
+
+  async inviteCollaborators(
+    id: string,
+    note: NoteCollaboratorsDto,
+  ): Promise<Note | string> {
+    note.collaborators.map(async (collaborator) => {
+      await this.NoteModel.findOneAndUpdate(
+        { _id: id },
+        {
+          $push: { collaborators: collaborator },
+        },
+        {
+          new: true,
+        },
+      );
     });
+
+    return 'Collaborators inserted';
   }
 
   async delete(id: string): Promise<any> {

@@ -1,5 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { UserDto } from './user.dto';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class NoteDto {
   @IsNotEmpty()
@@ -15,5 +14,6 @@ export class NoteDto {
   description: string;
 
   @IsOptional()
-  collaborators: UserDto[];
+  @IsArray()
+  note: Object[];
 }
