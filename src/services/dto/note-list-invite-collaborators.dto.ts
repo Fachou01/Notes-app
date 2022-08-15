@@ -1,6 +1,6 @@
 import { ArrayContains, IsArray, IsNotEmpty } from 'class-validator';
 
-export class NoteCollaboratorsDto {
+export class NoteListCollaboratorsDto {
   @IsNotEmpty()
   @IsArray()
   collaborators: Object[];

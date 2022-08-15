@@ -2,10 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { User } from './user.schema';
 
-export type NoteDocument = Note & Document;
+export type NoteListDocument = NoteList & Document;
 
 @Schema()
-export class Note {
+export class NoteList {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   owner: User;
 
@@ -15,11 +15,19 @@ export class Note {
   @Prop()
   description: string;
 
-  @Prop()
+  @Prop({
+    type: [
+      {
+        description: {
+          type: String,
+        },
+      },
+    ],
+  })
   notes: Object[];
 
   @Prop()
   collaborators: Object[];
 }
 
-export const NoteSchema = SchemaFactory.createForClass(Note);
+export const NoteListSchema = SchemaFactory.createForClass(NoteList);

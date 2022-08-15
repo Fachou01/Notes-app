@@ -1,6 +1,6 @@
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class NoteDto {
+export class NoteListDto {
   @IsNotEmpty()
   @IsString()
   owner: string;
@@ -12,8 +12,4 @@ export class NoteDto {
   @IsOptional()
   @IsString()
   description: string;
-
-  @IsOptional()
-  @IsArray()
-  note: Object[];
 }
