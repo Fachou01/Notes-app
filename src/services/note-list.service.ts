@@ -3,7 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { NoteList, NoteListDocument } from 'src/schemas/note-list.schema';
 import { AddNoteDto } from './dto/add-note.dto';
-import { NoteListCollaboratorsDto } from './dto/note-list-invite-collaborators.dto';
+import { NoteListCollaboratorDto } from './dto/note-list-invite-collaborator.dto';
+
 import { NoteListDto } from './dto/note-list.dto';
 
 @Injectable()
@@ -44,20 +45,17 @@ export class NoteListService {
 
   async inviteCollaborators(
     id: string,
-    note: NoteListCollaboratorsDto,
+    collaborator: NoteListCollaboratorDto,
   ): Promise<NoteList | string> {
-    note.collaborators.map(async (collaborator) => {
-      await this.NoteListModel.findOneAndUpdate(
-        { _id: id },
-        {
-          $push: { collaborators: collaborator },
-        },
-        {
-          new: true,
-        },
-      );
-    });
-    return 'Collaborators inserted';
+    return await this.NoteListModel.findOneAndUpdate(
+      { _id: id },
+      {
+        $push: { collaborators: collaborator },
+      },
+      {
+        new: true,
+      },
+    );
   }
 
   async deleteNoteList(id: string): Promise<any> {

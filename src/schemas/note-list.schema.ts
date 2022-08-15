@@ -26,7 +26,19 @@ export class NoteList {
   })
   notes: Object[];
 
-  @Prop()
+  @Prop({
+    type: [
+      {
+        _id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+        privileges: {
+          type: Object,
+        },
+      },
+    ],
+  })
   collaborators: Object[];
 }
 

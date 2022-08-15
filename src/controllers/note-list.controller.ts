@@ -10,7 +10,8 @@ import {
 import { Privilege } from 'src/decorators/privilege.decorator';
 import { NoteList } from 'src/schemas/note-list.schema';
 import { AddNoteDto } from 'src/services/dto/add-note.dto';
-import { NoteListCollaboratorsDto } from 'src/services/dto/note-list-invite-collaborators.dto';
+import { NoteListCollaboratorDto } from 'src/services/dto/note-list-invite-collaborator.dto';
+
 import { NoteListDto } from 'src/services/dto/note-list.dto';
 import { NoteListService } from 'src/services/note-list.service';
 
@@ -45,9 +46,9 @@ export class NoteListController {
   @Put('/invite/:id')
   async inviteCollaborators(
     @Param('id') id: string,
-    @Body() note: NoteListCollaboratorsDto,
+    @Body() collaborator: NoteListCollaboratorDto,
   ): Promise<any> {
-    return await this.noteListService.inviteCollaborators(id, note);
+    return await this.noteListService.inviteCollaborators(id, collaborator);
   }
 
   @Delete('/:id')

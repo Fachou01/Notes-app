@@ -7,8 +7,15 @@ import { UserDto } from './dto/user.dto';
 @Injectable()
 export class UserService {
   constructor(@InjectModel('User') private UserModel: Model<UserDocument>) {}
+
   async findAll(): Promise<User[]> {
     return await this.UserModel.find({});
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    return await this.UserModel.findOne({
+      email: email,
+    });
   }
 
   async findById(id: string): Promise<User> {
