@@ -6,8 +6,11 @@ import {
   Param,
   Post,
   Put,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { Privilege } from 'src/decorators/privilege.decorator';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { NoteList } from 'src/schemas/note-list.schema';
 import { AddNoteDto } from 'src/services/dto/add-note.dto';
 import { NoteListCollaboratorDto } from 'src/services/dto/note-list-invite-collaborator.dto';
@@ -20,8 +23,10 @@ export class NoteListController {
   constructor(private readonly noteListService: NoteListService) {}
 
   @Get('/')
+  @UseGuards(JwtAuthGuard)
   //@Privilege('W')
-  async findAllNoteList(): Promise<NoteList[] | string> {
+  async findAllNoteList(@Req() req): Promise<NoteList[] | string> {
+    console.log('request guard', req.user);
     return await this.noteListService.findAllNoteList();
   }
 
