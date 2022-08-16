@@ -45,7 +45,7 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Running the swagger
+## Running the swagger (APIS documentation)
 
 ```bash
 # development
