@@ -34,7 +34,7 @@ export class NoteListCollaboratorDto {
   })
   @IsNotEmpty()
   @IsString()
-  _id: string;
+  userId: string;
 
   @ApiProperty({
     type: Object,

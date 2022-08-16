@@ -29,7 +29,7 @@ export class NoteList {
   @Prop({
     type: [
       {
-        _id: {
+        userId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'User',
         },

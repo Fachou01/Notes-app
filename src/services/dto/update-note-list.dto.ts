@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class NoteListDto {
+export class UpdateNoteListDto {
   @ApiProperty({
     type: String,
     description: 'title of the Note List',
@@ -14,7 +14,7 @@ export class NoteListDto {
     type: String,
     description: 'description of the Note List',
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   description: string;
 }

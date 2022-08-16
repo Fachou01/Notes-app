@@ -30,19 +30,34 @@ export class PrivilegeGuard implements CanActivate {
       return noteList.owner == user._id;
     }
 
+    // IF THE REQUESTING USER HAS READ PRIVILEGE AS COLLABORATOR OR AS OWNER
+    if (privilege[0] == 'READ') {
+      if (noteList.owner == user._id) {
+        return true;
+      }
+      const collaborator = noteList.collaborators.find(
+        (collaborator: any) => collaborator.userId == user._id,
+      );
+      console.log(collaborator);
+      if (collaborator) {
+        return true;
+      }
+    }
+
     // IF THE REQUESTING USER HAS WRITE PRIVILEGE AS COLLABORATOR OR AS OWNER
     if (privilege[0] == 'WRITE') {
       if (noteList.owner == user._id) {
         return true;
       }
       const collaborator = noteList.collaborators.find(
-        (collaborator: any) => collaborator._id == user._id,
+        (collaborator: any) => collaborator.userId == user._id,
       );
+      if (!collaborator) {
+        return false;
+      }
       return collaborator['privileges'].w == true;
     }
 
     return false;
-
-    //if (privilege) return false;
   }
 }

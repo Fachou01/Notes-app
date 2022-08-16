@@ -25,11 +25,9 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('/')
-  @ApiBearerAuth()
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiForbiddenResponse({ description: 'Forbidden' })
   @ApiOkResponse({ description: 'Users has been successfully returned' })
-  @UseGuards(JwtAuthGuard)
   async findAll(): Promise<User[]> {
     return await this.userService.findAll();
   }
