@@ -45,6 +45,17 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Running the swagger (APIS documentation)
+
+```bash
+# development
+$ npm run start
+
+# watch mode
+$ npm run start:dev
+```
+- Swagger url : http://localhost:3000/api
+
 ## Test
 
 ```bash
