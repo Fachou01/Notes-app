@@ -112,4 +112,19 @@ export class NoteListService {
       },
     );
   }
+
+  async deleteCollaborator(
+    noteListId: string,
+    collaboratorId: string,
+  ): Promise<NoteList | string> {
+    return await this.NoteListModel.findOneAndUpdate(
+      { _id: noteListId },
+      {
+        $pull: { collaborators: { _id: collaboratorId } },
+      },
+      {
+        new: true,
+      },
+    );
+  }
 }

@@ -11,13 +11,7 @@ import { NoteListService } from 'src/services/note-list.service';
     MongooseModule.forFeature([{ name: 'NoteList', schema: NoteListSchema }]),
   ],
   controllers: [NoteListController],
-  providers: [
-    NoteListService,
-    {
-      provide: APP_GUARD,
-      useClass: PrivilegeGuard,
-    },
-  ],
+  providers: [NoteListService],
   exports: [NoteListService],
 })
 export class NoteListModule {}

@@ -9,8 +9,15 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { Privilege } from 'src/decorators/privilege.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { PrivilegeGuard } from 'src/guards/privilege.guard';
 import { NoteList } from 'src/schemas/note-list.schema';
 import { AddNoteDto } from 'src/services/dto/add-note.dto';
 import { NoteListCollaboratorDto } from 'src/services/dto/note-list-invite-collaborator.dto';
@@ -23,50 +30,81 @@ export class NoteListController {
   constructor(private readonly noteListService: NoteListService) {}
 
   @Get('/')
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiOkResponse({ description: 'Notes List has been successfully returned' })
   @UseGuards(JwtAuthGuard)
-  //@Privilege('W')
   async findAllNoteList(@Req() req): Promise<NoteList[] | string> {
     console.log('request guard', req.user);
     return await this.noteListService.findAllNoteList();
   }
 
-  @Get(':id')
-  async findNoteListById(@Param('id') id: string): Promise<NoteList> {
+  @Get(':noteListId')
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiOkResponse({
+    description: 'Note List with id has been successfully returned',
+  })
+  @UseGuards(JwtAuthGuard)
+  async findNoteListById(@Param('noteListId') id: string): Promise<NoteList> {
     return await this.noteListService.findNoteListById(id);
   }
 
   @Post('/')
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiOkResponse({
+    description: 'Note List has been successfully created',
+  })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   async addNoteList(@Body() note: NoteListDto): Promise<NoteList | string> {
     return await this.noteListService.addNoteList(note);
   }
 
-  @Put('/:id')
+  @Put('/:noteListId')
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiOkResponse({
+    description: 'Note List with id has been successfully updated',
+  })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, PrivilegeGuard)
+  @Privilege('WRITE')
   async updateNoteList(
-    @Param('id') id: string,
+    @Param('noteListId') id: string,
     @Body() note: Partial<NoteListDto>,
   ): Promise<any> {
     return await this.noteListService.updateNoteList(id, note);
   }
 
-  @Put('/invite/:id')
-  async inviteCollaborators(
-    @Param('id') id: string,
-    @Body() collaborator: NoteListCollaboratorDto,
-  ): Promise<any> {
-    return await this.noteListService.inviteCollaborators(id, collaborator);
-  }
-
-  @Delete('/:id')
-  async deleteNoteList(@Param('id') id: string): Promise<any> {
+  @Delete('/:noteListId')
+  @ApiOkResponse({
+    description: 'Note List with id has been successfully delete',
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, PrivilegeGuard)
+  @Privilege('WRITE')
+  async deleteNoteList(@Param('noteListId') id: string): Promise<any> {
     return await this.noteListService.deleteNoteList(id);
   }
 
   ///////////////////////// NOTE END-POINTS ///////////////////////
   // ADD NOTE
-  @Put('/add-note/:id')
-  //@Privilege('W')
+  @Put('/add-note/:noteListId')
+  @ApiOkResponse({
+    description: 'Note has been successfully created',
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, PrivilegeGuard)
+  @Privilege('WRITE')
   async addNote(
-    @Param('id') id: string,
+    @Param('noteListId') id: string,
     @Body() note: AddNoteDto,
   ): Promise<any> {
     return await this.noteListService.addNote(id, note);
@@ -74,7 +112,14 @@ export class NoteListController {
 
   // MODIFY NOTE
   @Put('/update-note/:noteListId/:noteId')
-  //@Privilege('W')
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiOkResponse({
+    description: 'Note with id has been successfully updated',
+  })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, PrivilegeGuard)
+  @Privilege('WRITE')
   async updateNote(
     @Param('noteListId') noteListId: string,
     @Param('noteId') noteId: string,
@@ -85,11 +130,54 @@ export class NoteListController {
 
   // DELETE NOTE
   @Delete('/delete-note/:noteListId/:noteId')
-  //@Privilege('W')
+  @ApiOkResponse({
+    description: 'Note with id has been successfully deleted',
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, PrivilegeGuard)
+  @Privilege('WRITE')
   async deleteNote(
     @Param('noteListId') noteListId: string,
     @Param('noteId') noteId: string,
   ): Promise<any> {
     return await this.noteListService.deleteNote(noteListId, noteId);
+  }
+
+  ///////////////////////// COLLABORATORS END-POINTS ///////////////////////
+  @Put('/invite-collaborator/:noteListId')
+  @ApiOkResponse({
+    description: 'collaborator has been successfully added',
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, PrivilegeGuard)
+  @Privilege('OWNER')
+  async inviteCollaborators(
+    @Param('noteListId') id: string,
+    @Body() collaborator: NoteListCollaboratorDto,
+  ): Promise<any> {
+    return await this.noteListService.inviteCollaborators(id, collaborator);
+  }
+
+  @Delete('/delete-collaborator/:noteListId/:collaboratorId')
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiOkResponse({
+    description: 'collaborator has been successfully deleted',
+  })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, PrivilegeGuard)
+  @Privilege('OWNER')
+  async deleteCollaborator(
+    @Param('noteListId') noteListId: string,
+    @Param('collaboratorId') collaboratorId: string,
+  ): Promise<any> {
+    return await this.noteListService.deleteCollaborator(
+      noteListId,
+      collaboratorId,
+    );
   }
 }
