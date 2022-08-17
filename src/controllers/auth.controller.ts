@@ -8,6 +8,7 @@ export class AuthController {
 
   @Post('/login')
   async login(@Body() user: LoginUserDto): Promise<any> {
+    //console.log('token', typeof process.env.JWT_SECRET);
     const userResponse = await this.authService.validateUser(
       user.email,
       user.password,
