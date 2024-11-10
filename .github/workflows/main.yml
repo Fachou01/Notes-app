@@ -1,37 +1,43 @@
 name: Simple Test Workflow
 
-# Trigger this action on every push to any branch
 on: [push]
 
 jobs:
-  test:
-    # Specifies the OS to run the job on
+  # Job 1: Run a basic test and check Node.js version
+  test-basic:
     runs-on: ubuntu-latest
-
     steps:
-      # Checks out the repository code
       - name: Check out code
         uses: actions/checkout@v3
 
-      # Run a simple shell command to test
       - name: Run echo command
         run: echo "Hello, GitHub Actions!"
 
-      # Run a Node.js version check (example for a Node project)
       - name: Check Node.js version
         run: node -v
 
-      # Set up Node.js environment for further steps
+  # Job 2: Setup Node.js environment and install dependencies
+  setup-node:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Specify the desired Node.js version
+          node-version: '16'
 
-      # Install dependencies (if you have a package.json file)
       - name: Install dependencies
-        run: |
-          npm install
+        run: npm install
 
-      # Run tests (assuming you are using npm)
+  # Job 3: Run tests, dependent on setup-node job
+  run-tests:
+    runs-on: ubuntu-latest
+    needs: setup-node  # This job will only run after setup-node completes
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
       - name: Run tests
         run: npm test
