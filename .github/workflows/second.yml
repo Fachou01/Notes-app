@@ -16,7 +16,18 @@ jobs:
       - name: Check Node.js version
         run: node -v
 
-  # Job 2: New independent job - Set up database
+  # Job 2: Task that depends on setup-environment
+  environment-dependent-task:
+    runs-on: ubuntu-latest
+    needs: setup-environment  # Depends on setup-environment
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Run an environment-dependent task
+        run: echo "Running a task that depends on setup-environment!"
+
+  # Job 3: Set up database
   setup-database:
     runs-on: ubuntu-latest
     steps:
@@ -29,7 +40,7 @@ jobs:
           # Add commands to initialize and seed the database
           echo "Database setup complete."
 
-  # Job 3: New dependent job - Run database-specific tests
+  # Job 4: Task that depends on setup-database
   run-db-tests:
     runs-on: ubuntu-latest
     needs: setup-database  # Depends on setup-database
@@ -43,7 +54,7 @@ jobs:
           # Add commands to test database functionality
           npm run test:db
 
-  # Job 4: Set up Node.js, install dependencies, and cache node_modules
+  # Job 5: Set up Node.js, install dependencies, and cache node_modules
   setup-node:
     runs-on: ubuntu-latest
     steps:
@@ -66,7 +77,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-  # Job 5: Run linting, dependent on setup-node job
+  # Job 6: Run linting, dependent on setup-node job
   run-lint:
     runs-on: ubuntu-latest
     needs: setup-node  # This job will only run after setup-node completes
@@ -77,7 +88,7 @@ jobs:
       - name: Run linting
         run: npm run lint
 
-  # Job 6: Run tests, dependent on run-lint job
+  # Job 7: Run tests, dependent on run-lint job
   run-tests:
     runs-on: ubuntu-latest
     needs: run-lint  # This job will only run after run-lint completes
@@ -88,7 +99,7 @@ jobs:
       - name: Run tests
         run: npm test
 
-  # Job 7: Build the application, dependent on run-tests job
+  # Job 8: Build the application, dependent on run-tests job
   build-app:
     runs-on: ubuntu-latest
     needs: run-tests  # This job will only run after run-tests completes
