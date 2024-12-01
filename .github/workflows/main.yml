@@ -118,3 +118,14 @@ jobs:
 
       - name: Perform task dependent on dependent-on-post-lint-task-2
         run: echo "Running dependent task for dependent-on-post-lint-task-2"
+
+  # Job 11: Dependent job on post-lint-task-3
+  dependent-on-post-lint-task-3:
+    runs-on: ubuntu-latest
+    needs: post-lint-task-3
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Perform task dependent on post-lint-task-3
+        run: echo "Running dependent task for post-lint-task-3"
