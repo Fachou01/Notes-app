@@ -5,8 +5,8 @@ on: [push]
 jobs:
   # Job 1: Set up environment and check the Node.js version
   setup-environment:
-    name: Set up Environment and Check Node.js Version
     runs-on: ubuntu-latest
+    name: Set up Environment and Check Node.js Version
     steps:
       - name: Check out code
         uses: actions/checkout@v3
